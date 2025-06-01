@@ -12,7 +12,13 @@ def get_weather(latitude: str, longitude: str, api_key: str) -> dict:
     response = requests.get(api_call)
     # Check if the response is successful
     if response.status_code == 200:
-        return response.json()
+        data = response.json()
+        return {
+            "description": data["weather"][0]["description"].title(),
+            "temp": data["main"]["temp"],
+            "feels_like": data["main"]["feels_like"],
+            "icon": f"http://openweathermap.org/img/wn/{data['weather'][0]['icon']}@2x.png"
+        }
     else:
         raise Exception(f"Error fetching weather data: {response.status_code} - {response.text}")
 

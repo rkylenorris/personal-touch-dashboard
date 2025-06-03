@@ -1,1 +1,1 @@
-from .weather import get_weather
+from .weather import get_current_weather, get_forecast

@@ -1,5 +1,5 @@
 import streamlit as st
-from home_tab import get_current_weather, get_forecast
+from home_tab import get_current_weather, get_forecast, get_calendar_events
 from dotenv import load_dotenv
 import os
 
@@ -47,10 +47,24 @@ def main():
             st.info("No forecast data available.")
     
     with calendar_col:
-        st.subheader("Calendar")
-        st.write("This is where the calendar will be displayed.")
-        # Placeholder for calendar functionality
-        st.info("Calendar functionality is not implemented yet.")
+        import datetime
+
+        st.subheader("📅 Upcoming Events")
+        
+        CALENDAR_ID = os.getenv('CALENDAR_ID', 'primary')
+        CALENDAR_CREDENTIALS_FILE = os.getenv('CALENDAR_CREDENTIALS_PATH', 'calendar-credentials.json')
+
+        events = get_calendar_events(CALENDAR_CREDENTIALS_FILE, calendar_id=CALENDAR_ID)
+        
+        if not events:
+            st.info("No upcoming events found.")
+        else:
+            for event in events:
+                start = event["start"].get("dateTime", event["start"].get("date"))
+                dt = datetime.datetime.fromisoformat(start)
+                time_str = dt.strftime("%a %b %d, %I:%M %p") if "T" in start else dt.strftime("%a %b %d")
+                title = event.get("summary", "Untitled")
+                st.markdown(f"**{time_str}** — {title}")
 
 
 if __name__ == "__main__":

@@ -6,6 +6,7 @@ __pycache__/
 # custom
 .env
 .venv/
+keys/
 
 
 # C extensions

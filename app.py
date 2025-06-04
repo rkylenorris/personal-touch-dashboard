@@ -1,5 +1,5 @@
 import streamlit as st
-from home_tab import get_current_weather, get_forecast, get_calendar_events
+from home_tab import get_current_weather, get_forecast, get_calendar_events, get_quote
 from dotenv import load_dotenv
 import os
 from datetime import datetime
@@ -31,6 +31,12 @@ def main():
     with title_container:
         # st.markdown(f"<h1 style='text-align: center; color: #4A90E2;'>{date_text}</h1>", unsafe_allow_html=True)
         st.title(date_text)
+        quote = get_quote()
+        if quote:
+            st.subheader(f"\"{quote['quote']}\"")
+            st.caption(f"- {quote['author']}")
+        else:
+            st.error("Quote not available.")
         
     weather_schedule_container = st.container()
     with weather_schedule_container:

@@ -1,5 +1,5 @@
 import streamlit as st
-from home_tab import get_current_weather, get_forecast, get_calendar_events, get_quote
+from home_tab import get_current_weather, get_forecast, get_calendar_events, get_quote, get_moon_phase
 from dotenv import load_dotenv
 import os
 from datetime import datetime
@@ -37,6 +37,8 @@ def main():
             st.caption(f"- {quote['author']}")
         else:
             st.error("Quote not available.")
+            
+        
         
     weather_schedule_container = st.container()
     with weather_schedule_container:
@@ -46,14 +48,27 @@ def main():
         weather = get_current_weather(LATITUDE, LONGITUDE, WEATHER_API_KEY)
         
         with weather_col:
-        
-            if weather:
-                st.subheader("Current Weather")
-                st.image(weather["icon"], width=100)
-                st.metric("Temp", f"{weather['temp']}°F", f"Feels like {weather['feels_like']}°F")
-                st.caption(weather["description"])
-            else:
-                st.error("Weather data not available.")
+            current_weather_col, moon_col = st.columns(2)
+            with current_weather_col:
+                if weather:
+                    st.subheader("Current Weather")
+                    st.image(weather["icon"], width=100)
+                    st.metric("Temp", f"{weather['temp']}°F", f"Feels like {weather['feels_like']}°F")
+                    st.caption(weather["description"])
+                else:
+                    st.error("Weather data not available.")
+            with moon_col:
+                moon = get_moon_phase()
+                st.subheader("Moon Phase")
+                st.markdown(
+                    f"""
+                    <div>
+                        <div>{moon['phase']}</div>
+                        {moon['icon']}
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
             
             st.subheader("Next Forecasts")
 
